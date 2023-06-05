@@ -1,11 +1,16 @@
 import 'package:flutter/cupertino.dart';
 
-const font20TextStyle = TextStyle(
-  fontSize: 20,
+const font17TextStyle = TextStyle(
+  fontSize: 17,
   color: CupertinoColors.white,
 );
 
-const font30TextStyle = TextStyle(
-  fontSize: 30,
+const font25TextStyle = TextStyle(
+  fontSize: 25,
+  color: CupertinoColors.white,
+);
+
+const font60TextStyle = TextStyle(
+  fontSize: 60,
   color: CupertinoColors.white,
 );

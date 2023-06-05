@@ -54,12 +54,10 @@ class _HomePagePageState extends State<HomePage> {
     return Scaffold(
       body: loding
           ? Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: const AssetImage('images/backgroundColorBlue.png'),
+                  image: AssetImage('images/backgroundColorBlue.png'),
                   fit: BoxFit.cover,
-                  colorFilter: ColorFilter.mode(
-                      Colors.white.withOpacity(0.8), BlendMode.dstATop),
                 ),
               ),
               // constraints: const BoxConstraints.expand(),
@@ -75,14 +73,14 @@ class _HomePagePageState extends State<HomePage> {
                           onPressed: () {
                             //현재위치 조회
                           },
-                          child: const Icon(
-                            Icons.near_me,
-                            color: Colors.white,
-                            size: 35.0,
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Icon(
+                              Icons.near_me,
+                              color: Colors.white,
+                              size: 35.0,
+                            ),
                           ),
-                        ),
-                        const SizedBox(
-                          width: 14,
                         ),
                         Container(
                           height: 37,
@@ -91,87 +89,378 @@ class _HomePagePageState extends State<HomePage> {
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.symmetric(
                                 vertical: 8,
-                                horizontal: 16,
+                                horizontal: 20,
                               ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.all(
-                                  Radius.circular(20),
+                                  Radius.circular(20.0),
                                 ),
-                                borderSide: BorderSide(
-                                  color: Colors.red, // 흰색으로 변경
-                                ),
+                                //         borderSide: BorderSide(
+                                //           color: Colors.white,
+                                //           width: 30, // 테두리의 굵기 조정
+                                //         ),
                               ),
                               hintText: '도시 검색',
                               hintStyle: TextStyle(
                                 color: Colors.white,
                               ),
                             ),
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
                           ),
                         ),
                         TextButton(
                           onPressed: () {},
-                          child: const Text(
-                            '검색',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Icon(
+                              Icons.search,
+                              size: 35.0,
                               color: Colors.white,
                             ),
                           ),
-                          // const Icon(
-                          //   Icons.search,
-                          //   size: 35.0,
-                          // ),
                         ),
                       ],
                     ),
-                    const SizedBox(
-                      height: 30,
+                    Padding(
+                      padding: const EdgeInsets.all(25.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: const [
+                                Text(
+                                  '안양시',
+                                  style: font25TextStyle,
+                                  textAlign: TextAlign.center,
+                                ),
+                                Text(
+                                  ' 25°',
+                                  style: font60TextStyle,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              // crossAxisAlignment: CrossAxisAlignment.start,
+                              children: const [
+                                Text(
+                                  '습도 : 55%',
+                                  style: font17TextStyle,
+                                  textAlign: TextAlign.center,
+                                ),
+                                Text(
+                                  '체감온도 : 24°',
+                                  style: font17TextStyle,
+                                  textAlign: TextAlign.center,
+                                ),
+                                Text(
+                                  '풍향/풍속 :\n서남서 10m/s',
+                                  style: font17TextStyle,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                          "이번 예보기간에는 구름많은 날이 많겠습니다.아침 기온은 14~21도, 낮 기온은 23~30도로 평년(최저기온 15~18도, 최고기온 24~28도)과 비슷하겠습니다.",
+                        textAlign: TextAlign.center,
+                        style: font17TextStyle,
+                      ),
                     ),
                     Row(
                       children: [
                         Expanded(
-                          child: Column(
-                            children: const [
-                              Text(
-                                '도시표기',
-                                style: font30TextStyle,
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Text(
-                                '온도표기',
-                                style: font30TextStyle,
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                  '10시'
+                                ),
+                                Text(
+                                    '☁'
+                                ),
+                                Text(
+                                    '20°'
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         Expanded(
-                          child: Column(
-                            // crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              Text(
-                                '습도 :',
-                                style: font20TextStyle,
-                                textAlign: TextAlign.center,
-                              ),
-                              Text(
-                                '체감온도 :',
-                                style: font20TextStyle,
-                                textAlign: TextAlign.center,
-                              ),
-                              Text(
-                                '풍향/풍속 :',
-                                style: font20TextStyle,
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                    '11시'
+                                ),
+                                Text(
+                                    '☁'
+                                ),
+                                Text(
+                                    '23°'
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                    '12시'
+                                ),
+                                Text(
+                                    '☁'
+                                ),
+                                Text(
+                                    '25°'
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                    '13시'
+                                ),
+                                Text(
+                                    '☁'
+                                ),
+                                Text(
+                                    '26°'
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                    '14시'
+                                ),
+                                Text(
+                                    '☁'
+                                ),
+                                Text(
+                                    '28°'
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Text('내일'),
+                                Text('6.6'),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('☔0%/0%'),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('☀/☀'),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('13°/26°'),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Text('내일'),
+                                Text('6.6'),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('☔0%/0%'),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('☀/☀'),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('13°/26°'),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Text('내일'),
+                                Text('6.6'),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('☔0%/0%'),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('☀/☀'),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('13°/26°'),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Text('내일'),
+                                Text('6.6'),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('☔0%/0%'),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('☀/☀'),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('13°/26°'),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Text('내일'),
+                                Text('6.6'),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('☔0%/0%'),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('☀/☀'),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('13°/26°'),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Text('내일'),
+                                Text('6.6'),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('☔0%/0%'),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('☀/☀'),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('13°/26°'),
                           ),
                         ),
                       ],
