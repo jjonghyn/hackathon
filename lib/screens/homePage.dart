@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:weather_app/screens/loadingPage.dart';
+import 'package:weather_app/screens/searchResultPage.dart';
+
+import '../constants/textStyle.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -8,120 +13,174 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePagePageState extends State<HomePage> {
-  // WeatherModel weather = WeatherModel();
-  // int temperature = 0;
-  // String weatherIcon = '';
-  // String cityName = '';
-  // String weatherMessage = '';
+  bool loding = false; //로딩바 false 선언
 
   @override
   void initState() {
     super.initState();
-    // updateUI(widget.locationWeather);
+    //메서드들...
   }
 
-  // void updateUI(dynamic weatherData) {
-  //   setState(() {
-  //     if (weatherData == null) {
-  //       temperature = 0;
-  //       weatherIcon = 'Error';
-  //       weatherMessage = 'Unable to get weather data';
-  //       cityName = '';
-  //       return;
-  //     }
-  //     double temp = weatherData['main']['temp']; //api에서 받은 온도 데이터
-  //     temperature = temp.toInt(); //api를 통헤 받은 온도 소수점 없이 출력을 위해 int형변환
-  //     var condition = weatherData['weather'][0]['id']; // weather의 첫번째 id값 condition에 담기
-  //     weatherIcon = weather.getWeatherIcon(condition); //condition값에 따라 weatherIcon변환
-  //     weatherMessage = weather.getMessage(temperature); //온도에 따라 메시지 출력
-  //     cityName = weatherData['name'];
-  //   });
-  // }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    selectWeatherData(); //날씨 데이터 가지고오기.
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  /*
+   * 날씨 데이터 가지고오기.
+   *
+   */
+
+  selectWeatherData() {
+    setState(() {
+      loding = false; //로딩바 초기화
+    });
+
+    //데이터불러오는 코드 심기
+
+    setState(() {
+      loding = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: const AssetImage('images/backgroundColorBlue.png'),
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-                Colors.white.withOpacity(0.8), BlendMode.dstATop),
-          ),
-        ),
-        constraints: const BoxConstraints.expand(),
-        child: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  TextButton(
-                    onPressed: () async {
-                      // var weatherData = await weather.getLocationWeather();
-                      // updateUI(weatherData);
-                    },
-                    child: const Icon(
-                      Icons.near_me,
-                      size: 50.0,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      // var typedName = await Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) {
-                      //       return const CityScreen();
-                      //     },
-                      //   ),
-                      // );
-                      // if (typedName != null) {
-                      //   var weatherData =
-                      //   await weather.getCityWeather(typedName);
-                      //   updateUI(weatherData);
-                      // }
-                    },
-                    child: const Icon(
-                      Icons.location_city,
-                      size: 50.0,
-                    ),
-                  ),
-                ],
+      body: loding
+          ? Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: const AssetImage('images/backgroundColorBlue.png'),
+                  fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(
+                      Colors.white.withOpacity(0.8), BlendMode.dstATop),
+                ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0),
-                child: Row(
+              // constraints: const BoxConstraints.expand(),
+              child: SafeArea(
+                child: Column(
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    Text(
-                      'asd'
-                      // '$temperature°',
-                      // style: kTempTextStyle,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            //현재위치 조회
+                          },
+                          child: const Icon(
+                            Icons.near_me,
+                            color: Colors.white,
+                            size: 35.0,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 14,
+                        ),
+                        Container(
+                          height: 37,
+                          width: 250,
+                          child: const TextField(
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(
+                                vertical: 8,
+                                horizontal: 16,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(20),
+                                ),
+                                borderSide: BorderSide(
+                                  color: Colors.red, // 흰색으로 변경
+                                ),
+                              ),
+                              hintText: '도시 검색',
+                              hintStyle: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {},
+                          child: const Text(
+                            '검색',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                          ),
+                          // const Icon(
+                          //   Icons.search,
+                          //   size: 35.0,
+                          // ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      'asd'
-                      // weatherIcon,
-                      // style: kConditionTextStyle,
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            children: const [
+                              Text(
+                                '도시표기',
+                                style: font30TextStyle,
+                                textAlign: TextAlign.center,
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                '온도표기',
+                                style: font30TextStyle,
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            // crossAxisAlignment: CrossAxisAlignment.start,
+                            children: const [
+                              Text(
+                                '습도 :',
+                                style: font20TextStyle,
+                                textAlign: TextAlign.center,
+                              ),
+                              Text(
+                                '체감온도 :',
+                                style: font20TextStyle,
+                                textAlign: TextAlign.center,
+                              ),
+                              Text(
+                                '풍향/풍속 :',
+                                style: font20TextStyle,
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(right: 15.0),
-                child: Text(
-                  'asd'
-                  // '$weatherMessage in $cityName',
-                  // textAlign: TextAlign.right,
-                  // style: kMessageTextStyle,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+            )
+          : const LoadingPage(),
     );
   }
 }
