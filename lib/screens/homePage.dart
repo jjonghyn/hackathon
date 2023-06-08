@@ -54,9 +54,11 @@ class _HomePagePageState extends State<HomePage> {
     print(location.latitude);
     print(location.longitude);
 
-    var aa = location.longitude;
+    var aa = location.latitude;
     var bb = location.longitude;
 
+    print('위도 : $aa');
+    print('경도 :$bb');
 
     // var gridToGpsData = ConvGridGps.gridToGPS(aa, bb);
     // var gridToGpsData = ConvGridGps.gridToGPS(60, 127);
