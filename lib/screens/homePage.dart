@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:weather_app/screens/loadingPage.dart';
 import 'package:weather_app/screens/searchResultPage.dart';
+import 'package:weather_app/servies/location.dart';
 
-import '../constants/textStyle.dart';
+import '../constants/commonTextStyle.dart';
+import '../servies/areaChange.dart';
+import '../servies/weatherInfo.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -18,13 +21,14 @@ class _HomePagePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    selectWeatherData();
     //메서드들...
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    selectWeatherData(); //날씨 데이터 가지고오기.
+     //날씨 데이터 가지고오기.
   }
 
   @override
@@ -36,13 +40,40 @@ class _HomePagePageState extends State<HomePage> {
    * 날씨 데이터 가지고오기.
    *
    */
+  Future selectWeatherData() async {
 
-  selectWeatherData() {
+    Location location = Location();
+
+    await location.getCurrentLocation();
+
+    print('왜안돼');
+
     setState(() {
       loding = false; //로딩바 초기화
     });
+    print(location.latitude);
+    print(location.longitude);
+
+    var aa = location.longitude;
+    var bb = location.longitude;
+
+
+    // var gridToGpsData = ConvGridGps.gridToGPS(aa, bb);
+    // var gridToGpsData = ConvGridGps.gridToGPS(60, 127);
+    // print(gridToGpsData);
+    var gpsToGridData = ConvGridGps.gpsToGRID(aa, bb);
+    print('이거.xxx로 찍히면 ㅇㅋ임 :$gpsToGridData');
+
 
     //데이터불러오는 코드 심기
+    var UltraSrtNcstWeatherData = await WeatherModel().getUltraSrtNcstWeatherData(); //초단기 실황 조회
+    var UltraSrtFcstWeatherData = await WeatherModel().getUltraSrtFcstWeatherData(); //초단기 예보 조회
+    // var weatherData = await WeatherModel().getUltraSrtFcstWeatherData(); //단기 예보 조회
+    // var weatherData = await WeatherModel().getUltraSrtFcstWeatherData(); //중기 기온 조회
+    // var weatherData = await WeatherModel().getUltraSrtFcstWeatherData(); //중기 육상 예보 조회
+    // var weatherData = await WeatherModel().getUltraSrtFcstWeatherData(); //중기 전망 조회
+    print('초단기 실황 : $UltraSrtNcstWeatherData');
+    print('초단기 예보 : $UltraSrtFcstWeatherData');
 
     setState(() {
       loding = true;
@@ -63,28 +94,28 @@ class _HomePagePageState extends State<HomePage> {
               // constraints: const BoxConstraints.expand(),
               child: SafeArea(
                 child: Column(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        TextButton(
-                          onPressed: () {
-                            //현재위치 조회
-                          },
-                          child: const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Icon(
-                              Icons.near_me,
-                              color: Colors.white,
-                              size: 35.0,
-                            ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: IconButton(
+                            iconSize: 35,
+                            color: Colors.white,
+                            icon: const Icon(Icons.near_me),
+                            onPressed: () {
+                              selectWeatherData();
+                            },
+                            // color: Colors.white,
+                            // size: 35.0,
                           ),
                         ),
                         Container(
-                          height: 37,
-                          width: 250,
+                          width: 255,
+                          height: 40,
                           child: const TextField(
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.symmetric(
@@ -95,10 +126,10 @@ class _HomePagePageState extends State<HomePage> {
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(20.0),
                                 ),
-                                //         borderSide: BorderSide(
-                                //           color: Colors.white,
-                                //           width: 30, // 테두리의 굵기 조정
-                                //         ),
+                                // borderSide: BorderSide(
+                                //   color: Colors.white,
+                                //   width: 30, // 테두리의 굵기 조정
+                                // ),
                               ),
                               hintText: '도시 검색',
                               hintStyle: TextStyle(
@@ -107,15 +138,14 @@ class _HomePagePageState extends State<HomePage> {
                             ),
                           ),
                         ),
-                        TextButton(
-                          onPressed: () {},
-                          child: const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Icon(
-                              Icons.search,
-                              size: 35.0,
-                              color: Colors.white,
-                            ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: IconButton(
+                            iconSize: 35,
+                            color: Colors.white,
+                            icon: const Icon(Icons.search),
+                            onPressed: () {
+                            },
                           ),
                         ),
                       ],
@@ -129,12 +159,12 @@ class _HomePagePageState extends State<HomePage> {
                               children: const [
                                 Text(
                                   '안양시',
-                                  style: font25TextStyle,
+                                  style: CommonTextStyle.font25TextStyle,
                                   textAlign: TextAlign.center,
                                 ),
                                 Text(
                                   ' 25°',
-                                  style: font60TextStyle,
+                                  style: CommonTextStyle.font60TextStyle,
                                   textAlign: TextAlign.center,
                                 ),
                               ],
@@ -146,17 +176,17 @@ class _HomePagePageState extends State<HomePage> {
                               children: const [
                                 Text(
                                   '습도 : 55%',
-                                  style: font17TextStyle,
+                                  style: CommonTextStyle.font17TextStyle,
                                   textAlign: TextAlign.center,
                                 ),
                                 Text(
                                   '체감온도 : 24°',
-                                  style: font17TextStyle,
+                                  style: CommonTextStyle.font17TextStyle,
                                   textAlign: TextAlign.center,
                                 ),
                                 Text(
                                   '풍향/풍속 :\n서남서 10m/s',
-                                  style: font17TextStyle,
+                                  style: CommonTextStyle.font17TextStyle,
                                   textAlign: TextAlign.center,
                                 ),
                               ],
@@ -168,9 +198,9 @@ class _HomePagePageState extends State<HomePage> {
                     const Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text(
-                          "이번 예보기간에는 구름많은 날이 많겠습니다.아침 기온은 14~21도, 낮 기온은 23~30도로 평년(최저기온 15~18도, 최고기온 24~28도)과 비슷하겠습니다.",
+                        "이번 예보기간에는 구름많은 날이 많겠습니다.아침 기온은 14~21도, 낮 기온은 23~30도로 평년(최저기온 15~18도, 최고기온 24~28도)과 비슷하겠습니다.",
                         textAlign: TextAlign.center,
-                        style: font17TextStyle,
+                        style: CommonTextStyle.font17TextStyle,
                       ),
                     ),
                     Row(
@@ -179,16 +209,10 @@ class _HomePagePageState extends State<HomePage> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
-                              children: [
-                                Text(
-                                  '10시'
-                                ),
-                                Text(
-                                    '☁'
-                                ),
-                                Text(
-                                    '20°'
-                                ),
+                              children: const [
+                                Text('10시'),
+                                Text('☁'),
+                                Text('20°'),
                               ],
                             ),
                           ),
@@ -197,16 +221,10 @@ class _HomePagePageState extends State<HomePage> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
-                              children: [
-                                Text(
-                                    '11시'
-                                ),
-                                Text(
-                                    '☁'
-                                ),
-                                Text(
-                                    '23°'
-                                ),
+                              children: const [
+                                Text('11시'),
+                                Text('☁'),
+                                Text('23°'),
                               ],
                             ),
                           ),
@@ -215,16 +233,10 @@ class _HomePagePageState extends State<HomePage> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
-                              children: [
-                                Text(
-                                    '12시'
-                                ),
-                                Text(
-                                    '☁'
-                                ),
-                                Text(
-                                    '25°'
-                                ),
+                              children: const [
+                                Text('12시'),
+                                Text('☁'),
+                                Text('25°'),
                               ],
                             ),
                           ),
@@ -233,16 +245,10 @@ class _HomePagePageState extends State<HomePage> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
-                              children: [
-                                Text(
-                                    '13시'
-                                ),
-                                Text(
-                                    '☁'
-                                ),
-                                Text(
-                                    '26°'
-                                ),
+                              children: const [
+                                Text('13시'),
+                                Text('☁'),
+                                Text('26°'),
                               ],
                             ),
                           ),
@@ -251,16 +257,10 @@ class _HomePagePageState extends State<HomePage> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
-                              children: [
-                                Text(
-                                    '14시'
-                                ),
-                                Text(
-                                    '☁'
-                                ),
-                                Text(
-                                    '28°'
-                                ),
+                              children: const [
+                                Text('14시'),
+                                Text('☁'),
+                                Text('28°'),
                               ],
                             ),
                           ),
@@ -273,28 +273,28 @@ class _HomePagePageState extends State<HomePage> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
-                              children: [
+                              children: const [
                                 Text('내일'),
                                 Text('6.6'),
                               ],
                             ),
                           ),
                         ),
-                        Expanded(
+                        const Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: Text('☔0%/0%'),
                           ),
                         ),
-                        Expanded(
+                        const Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: Text('☀/☀'),
                           ),
                         ),
-                        Expanded(
+                        const Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: Text('13°/26°'),
                           ),
                         ),
@@ -306,28 +306,28 @@ class _HomePagePageState extends State<HomePage> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
-                              children: [
+                              children: const [
                                 Text('내일'),
                                 Text('6.6'),
                               ],
                             ),
                           ),
                         ),
-                        Expanded(
+                        const Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: Text('☔0%/0%'),
                           ),
                         ),
-                        Expanded(
+                        const Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: Text('☀/☀'),
                           ),
                         ),
-                        Expanded(
+                        const Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: Text('13°/26°'),
                           ),
                         ),
@@ -339,28 +339,28 @@ class _HomePagePageState extends State<HomePage> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
-                              children: [
+                              children: const [
                                 Text('내일'),
                                 Text('6.6'),
                               ],
                             ),
                           ),
                         ),
-                        Expanded(
+                        const Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: Text('☔0%/0%'),
                           ),
                         ),
-                        Expanded(
+                        const Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: Text('☀/☀'),
                           ),
                         ),
-                        Expanded(
+                        const Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: Text('13°/26°'),
                           ),
                         ),
@@ -372,28 +372,28 @@ class _HomePagePageState extends State<HomePage> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
-                              children: [
+                              children: const [
                                 Text('내일'),
                                 Text('6.6'),
                               ],
                             ),
                           ),
                         ),
-                        Expanded(
+                        const Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: Text('☔0%/0%'),
                           ),
                         ),
-                        Expanded(
+                        const Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: Text('☀/☀'),
                           ),
                         ),
-                        Expanded(
+                        const Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: Text('13°/26°'),
                           ),
                         ),
@@ -405,28 +405,28 @@ class _HomePagePageState extends State<HomePage> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
-                              children: [
+                              children: const [
                                 Text('내일'),
                                 Text('6.6'),
                               ],
                             ),
                           ),
                         ),
-                        Expanded(
+                        const Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: Text('☔0%/0%'),
                           ),
                         ),
-                        Expanded(
+                        const Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: Text('☀/☀'),
                           ),
                         ),
-                        Expanded(
+                        const Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: Text('13°/26°'),
                           ),
                         ),
@@ -438,28 +438,28 @@ class _HomePagePageState extends State<HomePage> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
-                              children: [
+                              children: const [
                                 Text('내일'),
                                 Text('6.6'),
                               ],
                             ),
                           ),
                         ),
-                        Expanded(
+                        const Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: Text('☔0%/0%'),
                           ),
                         ),
-                        Expanded(
+                        const Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: Text('☀/☀'),
                           ),
                         ),
-                        Expanded(
+                        const Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: Text('13°/26°'),
                           ),
                         ),

@@ -39,24 +39,32 @@ class _LoadingPageState extends State<LoadingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body:
-      Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            SpinKitDoubleBounce(
-              color: Colors.blueAccent,
-              size: 70.0,
-            ),
-            SizedBox(height: 16.0), // 추가: 텍스트와 SpinKit 간격 조절을 위한 SizedBox
-            Text(
-              '날씨를 조회 중입니다...',
-              style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+      Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('images/backgroundColorWhite.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              SpinKitDoubleBounce(
+                color: Colors.blue,
+                size: 70.0,
               ),
-            ),
-          ],
+              SizedBox(height: 16.0), // 추가: 텍스트와 SpinKit 간격 조절을 위한 SizedBox
+              Text(
+                '날씨를 조회 중입니다...',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

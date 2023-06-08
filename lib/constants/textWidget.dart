@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:weather_app/constants/textStyle.dart';
+import 'package:weather_app/constants/commonTextStyle.dart';
 
 class TextWidget extends StatelessWidget {
   const TextWidget({
@@ -16,7 +16,7 @@ class TextWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       textString,
-      style: font25TextStyle,
+      style: CommonTextStyle.font25TextStyle,
       textAlign: TextAlign.center,
     );
   }
