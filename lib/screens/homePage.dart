@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:weather_app/screens/loadingPage.dart';
@@ -17,6 +19,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePagePageState extends State<HomePage> {
   bool loding = false; //로딩바 false 선언
+  Map? mapData = {}; //초단기실황 데이터 변수 선언
+
 
   @override
   void initState() {
@@ -36,46 +40,32 @@ class _HomePagePageState extends State<HomePage> {
     super.dispose();
   }
 
+
+
   /*
    * 날씨 데이터 가지고오기.
    *
    */
   Future selectWeatherData() async {
 
-    Location location = Location();
-
-    await location.getCurrentLocation();
-
-    print('왜안돼');
-
     setState(() {
       loding = false; //로딩바 초기화
     });
-    print(location.latitude);
-    print(location.longitude);
-
-    var aa = location.latitude;
-    var bb = location.longitude;
-
-    print('위도 : $aa');
-    print('경도 :$bb');
-
-    // var gridToGpsData = ConvGridGps.gridToGPS(aa, bb);
-    // var gridToGpsData = ConvGridGps.gridToGPS(60, 127);
-    // print(gridToGpsData);
-    var gpsToGridData = ConvGridGps.gpsToGRID(aa, bb);
-    print('이거.xxx로 찍히면 ㅇㅋ임 :$gpsToGridData');
-
 
     //데이터불러오는 코드 심기
-    var UltraSrtNcstWeatherData = await WeatherModel().getUltraSrtNcstWeatherData(); //초단기 실황 조회
-    var UltraSrtFcstWeatherData = await WeatherModel().getUltraSrtFcstWeatherData(); //초단기 예보 조회
+    mapData = await WeatherModel().getMapList();
+    log("---> " + mapData.toString());
+    //categoryValueData = await WeatherModel().getUltraSrtNcstCategoryValue(); //초단기실황조회 map형식 데이터 categoryValueData 변수에 담기
+    //var utraSrtFcstWeatherData = await WeatherModel().getUltraSrtFcstWeatherData(); //초단기 예보 조회
     // var weatherData = await WeatherModel().getUltraSrtFcstWeatherData(); //단기 예보 조회
     // var weatherData = await WeatherModel().getUltraSrtFcstWeatherData(); //중기 기온 조회
     // var weatherData = await WeatherModel().getUltraSrtFcstWeatherData(); //중기 육상 예보 조회
     // var weatherData = await WeatherModel().getUltraSrtFcstWeatherData(); //중기 전망 조회
-    print('초단기 실황 : $UltraSrtNcstWeatherData');
-    print('초단기 예보 : $UltraSrtFcstWeatherData');
+    // print('초단기 실황 : $UltraSrtNcstWeatherData');
+    // print('초단기 예보 : $UltraSrtFcstWeatherData');
+    //print(utraSrtFcstWeatherData);
+    //print ('카테고리가공데이터homepage확인 $categoryValueData');
+
 
     setState(() {
       loding = true;
@@ -104,15 +94,17 @@ class _HomePagePageState extends State<HomePage> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: IconButton(
-                            iconSize: 35,
-                            color: Colors.white,
-                            icon: const Icon(Icons.near_me),
-                            onPressed: () {
-                              selectWeatherData();
-                            },
-                            // color: Colors.white,
-                            // size: 35.0,
+                          child: InkWell(
+                            child: IconButton(
+                              iconSize: 35,
+                              color: Colors.white,
+                              icon: const Icon(Icons.near_me),
+                              onPressed: () {
+                                selectWeatherData();
+                              },
+                              // color: Colors.white,
+                              // size: 35.0,
+                            ),
                           ),
                         ),
                         Container(
@@ -158,14 +150,14 @@ class _HomePagePageState extends State<HomePage> {
                         children: [
                           Expanded(
                             child: Column(
-                              children: const [
+                              children: [
                                 Text(
                                   '안양시',
                                   style: CommonTextStyle.font25TextStyle,
                                   textAlign: TextAlign.center,
                                 ),
                                 Text(
-                                  ' 25°',
+                                  '${mapData?['getUltraSrtNcst']["T1H"]}°',
                                   style: CommonTextStyle.font60TextStyle,
                                   textAlign: TextAlign.center,
                                 ),
@@ -175,19 +167,19 @@ class _HomePagePageState extends State<HomePage> {
                           Expanded(
                             child: Column(
                               // crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
+                              children: [
                                 Text(
-                                  '습도 : 55%',
+                                  '습도 : ${mapData?['getUltraSrtNcst']['REH']}%',
                                   style: CommonTextStyle.font17TextStyle,
                                   textAlign: TextAlign.center,
                                 ),
+                                // Text(
+                                //   '체감온도 : 24°',
+                                //   style: CommonTextStyle.font17TextStyle,
+                                //   textAlign: TextAlign.center,
+                                // ),
                                 Text(
-                                  '체감온도 : 24°',
-                                  style: CommonTextStyle.font17TextStyle,
-                                  textAlign: TextAlign.center,
-                                ),
-                                Text(
-                                  '풍향/풍속 :\n서남서 10m/s',
+                                  '풍향/풍속 :\n${mapData?['getUltraSrtNcst']['VVV']}${mapData?['getUltraSrtNcst']['UUU']}풍 ${mapData?['getUltraSrtNcst']['WSD']}m/s',
                                   style: CommonTextStyle.font17TextStyle,
                                   textAlign: TextAlign.center,
                                 ),

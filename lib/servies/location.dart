@@ -9,9 +9,9 @@ class Location {
   Future<void> getCurrentLocation() async {
     //현재위치 위경도가 안 나올 경우를 위해 예외 처리
     try {
-      LocationPermission permission = await Geolocator.requestPermission(); //오류 해결 코드
+      // LocationPermission permission = await Geolocator.requestPermission(); //오류 해결 코드
       Position position = await Geolocator.
-      getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
+      getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
       latitude = position.latitude;
       longitude = position.longitude;
