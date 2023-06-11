@@ -1,8 +1,8 @@
 import 'package:geolocator/geolocator.dart';
 
 class Location {
-  double latitude = 0; //위도
-  double longitude = 0; //경도
+  double latitude = 0.0; //위도
+  double longitude = 0.0; //경도
 
 
   //현재위치를 기반으로 날씨정보 가져오기 geolocator라이브러리 사용

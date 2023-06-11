@@ -157,7 +157,7 @@ class _HomePagePageState extends State<HomePage> {
                                   textAlign: TextAlign.center,
                                 ),
                                 Text(
-                                  '${mapData?['getUltraSrtNcst']["T1H"]}°',
+                                  '${mapData?['getUltraSrtNcst']['T1H']}°',
                                   style: CommonTextStyle.font60TextStyle,
                                   textAlign: TextAlign.center,
                                 ),

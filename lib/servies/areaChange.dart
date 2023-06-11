@@ -2,7 +2,10 @@ import 'dart:math' as Math;
 
 import 'package:weather_app/servies/location.dart';
 
-
+/*
+* github에서 가져온 기상청 api 격자데이터 변경 코드
+* https://gist.github.com/fronteer-kr/14d7f779d52a21ac2f16
+* */
 class ConvGridGps {
   static const double RE = 6371.00877; // 지구 반경(km)
   static const double GRID = 5.0; // 격자 간격(km)
@@ -17,18 +20,24 @@ class ConvGridGps {
   static const double RADDEG = 180.0 / Math.pi;
 
   static double get re => RE / GRID;
+
   static double get slat1 => SLAT1 * DEGRAD;
+
   static double get slat2 => SLAT2 * DEGRAD;
+
   static double get olon => OLON * DEGRAD;
+
   static double get olat => OLAT * DEGRAD;
 
   static double get snTmp =>
       Math.tan(Math.pi * 0.25 + slat2 * 0.5) /
-          Math.tan(Math.pi * 0.25 + slat1 * 0.5);
+      Math.tan(Math.pi * 0.25 + slat1 * 0.5);
+
   static double get sn =>
       Math.log(Math.cos(slat1) / Math.cos(slat2)) / Math.log(snTmp);
 
   static double get sfTmp => Math.tan(Math.pi * 0.25 + slat1 * 0.5);
+
   static double get sf => Math.pow(sfTmp, sn) * Math.cos(slat1) / sn;
 
   static double get roTmp => Math.tan(Math.pi * 0.25 + olat * 0.5);
@@ -81,6 +90,4 @@ class ConvGridGps {
 
     return rs;
   }
-
-
 }
