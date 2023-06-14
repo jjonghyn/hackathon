@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:intl/intl.dart';
 import 'package:weather_app/servies/netWork.dart';
 
+import '../constants/timeWidget.dart';
 import 'areaChange.dart';
 import 'location.dart';
 
@@ -28,7 +30,12 @@ const getMidLandFcstURL =
 const serviceKey =
     '9OX4Slh4W3dxrLci5bFKmza/QEZJp8tfW9cna8a6T7GjZEwX1RSQPO/wXg4vemOPpQIh6S23eDDgT0SDDfTiRw==';
 
-class WeatherModel {
+class WeatherModel{
+  // List<String>? targetTimes;
+
+  DateTime currentTime = DateTime.now();
+
+
   //초단기 실황 조회
   Future<Map<String, dynamic>> getUltraSrtNcstURLWeatherData() async {
     Location location = Location();
@@ -44,18 +51,16 @@ class WeatherModel {
     var x = gpsToGridData['x'];
     var y = gpsToGridData['y'];
 
-    DateTime currentTime = DateTime.now();
+    // DateTime currentTime = DateTime.now();
     DateTime oneHourAgo = currentTime.subtract(Duration(hours: 1));
     String formattedTime = DateFormat('HH').format(oneHourAgo).toString();
-
 
     //현재 년도월일
     String baseDate =
         '${currentTime.year}${currentTime.month.toString().padLeft(2, '0')}${currentTime.day.toString().padLeft(2, '0')}';
 
     //현재 시간 -1시간
-    String baseTime =
-        formattedTime+'00';
+    String baseTime = formattedTime + '00';
 
     NetworkHelper networkHelper = NetworkHelper(
         '$getUltraSrtNcstURL?serviceKey=$serviceKey&dataType=JSON&base_date=$baseDate&base_time=$baseTime&nx=$x&ny=$y');
@@ -125,6 +130,8 @@ class WeatherModel {
     return categoryValue;
   }
 
+
+
   //단기 예보 조회
   Future<Map<String, dynamic>> getVilageFcstURLWeatherData() async {
     Location location = Location();
@@ -140,146 +147,101 @@ class WeatherModel {
     var x = gpsToGridData['x'];
     var y = gpsToGridData['y'];
 
-    DateTime currentTime = DateTime.now();
-    DateTime oneHourAgo = currentTime.subtract(Duration(hours: 1));
-    String formattedTime = DateFormat('HH').format(oneHourAgo).toString();
+    // DateTime currentTime = DateTime.now();
+    // print('Current Time: $currentTime');
+    // DateTime oneHourAgo = currentTime.subtract(Duration(hours: 1));
+    // String formattedTime = DateFormat('HH').format(oneHourAgo).toString();
 
     //현재 년도월일
     String baseDate =
-    '${currentTime.year}${currentTime.month.toString().padLeft(2, '0')}${currentTime.day.toString().padLeft(2, '0')}';
+        '${currentTime.year}${currentTime.month.toString().padLeft(2, '0')}${currentTime.day.toString().padLeft(2, '0')}';
+
+
 
     //현재 시간 -1시간
-    String baseTime =
-        '0800';
-        // '0500';
-        // formattedTime+'00';
+    // for (String time in targetTimes) {
+    //   String baseTime = time;
+    // }
+    // String! baseTime = getClosestTime(currentTime, targetTimes!);
+    String baseTime = '';
 
-    // log('오늘날짜 : $baseDate');
-    // log('현재시간 : $baseTime');
+    // log('베이스타임 현재시간 기준 가장 가까운 녀석 찍음:${baseTime.toString()}');
+    // log('${formattedTime.toString()}00');
+    // '0800';
+    // '0500';
+    // formattedTime+'00';
 
     NetworkHelper networkHelper = NetworkHelper(
         '$getVilageFcstURL?serviceKey=$serviceKey&dataType=JSON&numOfRows=1000&base_date=$baseDate&base_time=$baseTime&nx=$x&ny=$y');
     var weatherData = await networkHelper.getData();
-
     return weatherData;
-
   }
 
   //단기 예보 데이터 가공
-  Future<Map<String, dynamic>> getVilageFcstDataProcess() async {
-    //가공할 데이터담을 map 변수 선언
-    Map<String, dynamic> categoryValue = {};
-
-
+  Future<Object> getVilageFcstDataProcess() async {
     //전체 데이터 불러오기
     var weatherData = await getVilageFcstURLWeatherData();
 
-
-
-    // log('단기예보조회 이친구가 한시간 단위로 데이터 뽑아줌 : $weatherData');
-
     //item의 List 전체 데이터 추출
     List itemList = weatherData['response']['body']['items']['item'];
-    // log("====  "+itemList.toString());
-    List categoryValueList = [];
 
-    List categortValueList = List.empty(growable: true);
-    Map category = {};
+    /*
+    * 하나의 카테고리로 되어있는 온도와 날씨상태를 각각으로 뽑아내어 새로운 ListMap에 담아
+    * api에서 필요한 데이터만 추출하기 위해 List선언
+    * */
+    List tmpValueList = List.empty(growable: true);
+    List skyValueList = List.empty(growable: true);
+
+    //온도 데이터를 추출하기 위한 작업
     for (int i = 0; i < itemList.length; i++) {
-      //itemList의 category List 추출
-      // log('-------------------->>>'+category.toString());
-      
-      if(itemList[i]['category'] == 'TMP'){
-        log('--> '+i.toString());
-        log('--> '+itemList[i]['fcstValue'].toString());
-        log('--> '+itemList[i]['fcstTime'].toString());
-
-        category['TMP'] = itemList[i]['fcstValue'];
-        category['fcstTime'] = itemList[i]['fcstTime'];
-        // category['SKY'] = itemList[i]['fcstValue'];
-
-        // if(category['SKY'] <= 5){}
-
-        log(category.toString());
-
-
-      } else if (itemList[i]['category'] == 'SKY'){
-        category['SKY'] = itemList[i]['fcstValue'];
+      if (itemList[i]['category'] == 'TMP') {
+        tmpValueList.add({
+          'TMP': itemList[i]['fcstValue'],
+          'DateTime': '${itemList[i]['fcstDate']}${itemList[i]['fcstTime']}',
+        });
       }
-      categortValueList.add({
-        'TMP' : itemList[i]['fcstValue'],
-        'fcstTime' : itemList[i]['fcstTime'],
-        'SKY' : itemList[i]['fcstValue'],
-      });
-      //aa.add(category);
-      // if(itemList[i]['category'] == 'SKY'){
-      //   category['SKY'] = itemList[i]['fcstValue'];
-      //   aa.add({'SKY' : itemList[i]['fcstValue']});
-      // }
-
-      // log('카테고리밸류'+category.toString());
-
     }
 
-    //1. map 선언
-    //2. api에서 불러온 fcstTime를 우선적으로 map에 넣기
-    //3. api에서 불러온 category의 TMP와SKY데이터 map에 넣기
+    //날씨상태 데이터를 추출하기 위한 작업
+    for (int i = 0; i < itemList.length; i++) {
+      if (itemList[i]['category'] == 'SKY') {
+        skyValueList.add({
+          'SKY': itemList[i]['fcstValue'],
+          'DateTime': '${itemList[i]['fcstDate']}${itemList[i]['fcstTime']}',
+        });
+      }
+    }
 
-    log('---->'+categortValueList.toString());
-    return {};
+    /*
+    * 각각의 List에서 필요한 데이터를 뽑아내어
+    * newTmpSkyList라는 새로운 리스트에 합치기
+    */
+    List newTmpSkyList = List.empty(growable: true);
+    for (int i = 0; i < tmpValueList.length; i++) {
+      for (int j = 0; j < skyValueList.length; j++) {
+        if (tmpValueList[i]['DateTime'] == skyValueList[j]['DateTime']) {
+
+          String weatherIcon = '';
+
+          if (0 <= int.parse(skyValueList[j]['SKY']) && int.parse(skyValueList[j]['SKY']) <= 5) {
+            weatherIcon = '☀';
+          } else if (6 <= int.parse(skyValueList[j]['SKY']) && int.parse(skyValueList[j]['SKY']) <= 8) {
+            weatherIcon = '☁';
+          } else if (9 <= int.parse(skyValueList[j]['SKY']) && int.parse(skyValueList[j]['SKY']) <= 10) {
+            weatherIcon = '🌫';
+          }
+
+          newTmpSkyList.add({
+            'DateTime': tmpValueList[i]['DateTime'],
+            'TMP': tmpValueList[i]['TMP'],
+            'SKY': weatherIcon,
+            // 'SKY' : skyValueList[j]['SKY'],
+          });
+        }
+      }
+    }
+    return newTmpSkyList;
   }
-
-  //초단기 예보 조회
-  // Future<Map<String, dynamic>> getUltraSrtFcstWeatherData() async {
-  //   Location location = Location();
-  //
-  //   await location.getCurrentLocation();
-  //
-  //   double lat = location.latitude;
-  //   double lng = location.longitude;
-  //
-  //   //geolocator 라이브러리로 불러온 현재 나의 위경도 데이터를 격자데이터로 변환
-  //   var gpsToGridData = ConvGridGps.gpsToGRID(lat, lng);
-  //
-  //   var x = gpsToGridData['x'];
-  //   var y = gpsToGridData['y'];
-  //
-  //   DateTime currentTime = DateTime.now();
-  //
-  //   String baseDate =
-  //       '20230612';
-  //       // '${currentTime.year}${currentTime.month.toString().padLeft(2, '0')}${currentTime.day.toString().padLeft(2, '0')}';
-  //
-  //   var oneHourAgo = currentTime.subtract(Duration(hours: 1));
-  //   var formattedTime = DateFormat('HH').format(oneHourAgo);
-  //
-  //
-  //   String baseTime =
-  //   '0100';
-  //       // '${formattedTime}00';
-  //       // '${currentTime.subtract(Duration(hours: 1)).hour.toString()}00';
-  //
-  //   NetworkHelper networkHelper = NetworkHelper(
-  //       '$getUltraSrtFcstURL?serviceKey=$serviceKey&dataType=JSON&base_date=$baseDate&base_time=$baseTime&nx=$x&ny=$y');
-  //   print('Current Base Date: $baseDate');
-  //   print('Current Base Time: $baseTime');
-  //   var weatherData = await networkHelper.getData();
-  //   print('초단기 예보 : $weatherData');
-  //   return weatherData;
-  //
-  //   /*
-  //   * {response: {header: {resultCode: 00, resultMsg: NORMAL_SERVICE},
-  //   * body: {dataType: JSON, items: {item:
-  //   * [{baseDate: 20230611, baseTime: 0030, category: LGT, fcstDate: 20230611, fcstTime: 0100, fcstValue: 1, nx: 60, ny: 121},
-  //   * {baseDate: 20230611, baseTime: 0030, category: LGT, fcstDate: 20230611, fcstTime: 0200, fcstValue: 0, nx: 60, ny: 121},
-  //   * {baseDate: 20230611, baseTime: 0030, category: LGT, fcstDate: 20230611, fcstTime: 0300, fcstValue: 0, nx: 60, ny: 121},
-  //   * {baseDate: 20230611, baseTime: 0030, category: LGT, fcstDate: 20230611, fcstTime: 0400, fcstValue: 0, nx: 60, ny: 121},
-  //   * {baseDate: 20230611, baseTime: 0030, category: LGT, fcstDate: 20230611, fcstTime: 0500, fcstValue: 0, nx: 60, ny: 121},
-  //   * {baseDate: 20230611, baseTime: 0030, category: LGT, fcstDate: 20230611, fcstTime: 0600, fcstValue: 0, nx: 60, ny: 121},
-  //   * {baseDate: 20230611, baseTime: 0030, category: PTY, fcstDate: 20230611, fcstTime: 0100, fcstValue: 1, nx: 60, ny: 121},
-  //   * {baseDate: 20230611, baseTime: 0030, category: PTY, fcstDate:
-  //   * */
-  // }
 
   //map형태 데이터 map안에 담기
   Future getMapList() async {
@@ -289,4 +251,40 @@ class WeatherModel {
     map['getVilageFcst'] = await getVilageFcstDataProcess();
     return map;
   }
+
+}
+
+//currentTime변수와 now변수 동시에 같은 걸 쓰고있어서 에러가 나옴 이거 해결해야함 ㅇㅇ
+void displayClosestTime() {
+
+  List<String> targetTimes = ['0200', '0500', '0800', '1100', '1400', '1700', '2000', '2300'];
+
+  // Format current time
+  DateFormat formatter = DateFormat('HHmm');
+  String now = formatter.format(currentTime);
+
+  print('Current Time: $now');
+
+  String? closestTime = getClosestTime(now, targetTimes);
+  print('Closest Time: $closestTime');
+}
+
+String? getClosestTime(String currentTime, List<String> targetTimes) {
+  DateFormat formatter = DateFormat('HHmm');
+  DateTime current = formatter.parse(currentTime);
+
+  Duration? minDifference;
+  String? closestTime;
+
+  for (String time in targetTimes) {
+    DateTime target = formatter.parse(time);
+    Duration difference = current.difference(target).abs();
+
+    if (minDifference == null || difference < minDifference) {
+      minDifference = difference;
+      closestTime = time;
+    }
+  }
+
+  return closestTime;
 }

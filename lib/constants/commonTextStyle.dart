@@ -11,8 +11,8 @@ class CommonTextStyle {
     color: CupertinoColors.white,
   );
 
-  static const font60TextStyle = TextStyle(
-    fontSize: 60,
+  static const font50TextStyle = TextStyle(
+    fontSize: 50,
     color: CupertinoColors.white,
   );
 }

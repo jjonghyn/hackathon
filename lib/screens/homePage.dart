@@ -57,18 +57,7 @@ class _HomePagePageState extends State<HomePage> {
 
     //데이터불러오는 코드 심기
     mapData = await WeatherModel().getMapList();
-    // log("---> " + mapData.toString());
-
-    //categoryValueData = await WeatherModel().getUltraSrtNcstCategoryValue(); //초단기실황조회 map형식 데이터 categoryValueData 변수에 담기
-    //var utraSrtFcstWeatherData = await WeatherModel().getUltraSrtFcstWeatherData(); //초단기 예보 조회
-    // var weatherData = await WeatherModel().getUltraSrtFcstWeatherData(); //단기 예보 조회
-    // var weatherData = await WeatherModel().getUltraSrtFcstWeatherData(); //중기 기온 조회
-    // var weatherData = await WeatherModel().getUltraSrtFcstWeatherData(); //중기 육상 예보 조회
-    // var weatherData = await WeatherModel().getUltraSrtFcstWeatherData(); //중기 전망 조회
-    // print('초단기 실황 : $UltraSrtNcstWeatherData');
-    // print('초단기 예보 : $UltraSrtFcstWeatherData');
-    //print(utraSrtFcstWeatherData);
-    //print ('카테고리가공데이터homepage확인 $categoryValueData');
+    log("---> " + mapData.toString());
 
     setState(() {
       loding = true;
@@ -146,44 +135,55 @@ class _HomePagePageState extends State<HomePage> {
                       ],
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Column(
-                        children: [
-                          Text(
-                            '안양시',
-                            style: CommonTextStyle.font25TextStyle,
-                            textAlign: TextAlign.center,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10,0,0,0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Column(
+                          children: [
+                            Text(
+                              '안양시',
+                              style: CommonTextStyle.font25TextStyle,
+                              textAlign: TextAlign.center,
+                            ),
+                            Text(
+                              '${mapData?['getUltraSrtNcst']['T1H']}°',
+                              style: CommonTextStyle.font50TextStyle,
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0,0,20,0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '습도 : ${mapData?['getUltraSrtNcst']['REH']}%',
+                                style: CommonTextStyle.font17TextStyle,
+                                textAlign: TextAlign.center,
+                              ),
+                              // Text(
+                              //   '체감온도 : 24°',
+                              //   style: CommonTextStyle.font17TextStyle,
+                              //   textAlign: TextAlign.center,
+                              // ),
+                              Text(
+                                '풍향 : ${mapData?['getUltraSrtNcst']['VVV']}${mapData?['getUltraSrtNcst']['UUU']}풍',
+                                style: CommonTextStyle.font17TextStyle,
+                                textAlign: TextAlign.center,
+                              ),
+                              Text(
+                                '풍속 : ${mapData?['getUltraSrtNcst']['WSD']}m/s',
+                                style: CommonTextStyle.font17TextStyle,
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
                           ),
-                          Text(
-                            '${mapData?['getUltraSrtNcst']['T1H']}°',
-                            style: CommonTextStyle.font60TextStyle,
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '습도 : ${mapData?['getUltraSrtNcst']['REH']}%',
-                            style: CommonTextStyle.font17TextStyle,
-                            textAlign: TextAlign.center,
-                          ),
-                          // Text(
-                          //   '체감온도 : 24°',
-                          //   style: CommonTextStyle.font17TextStyle,
-                          //   textAlign: TextAlign.center,
-                          // ),
-                          Text(
-                            '풍향/풍속 :\n${mapData?['getUltraSrtNcst']['VVV']}${mapData?['getUltraSrtNcst']['UUU']}풍 ${mapData?['getUltraSrtNcst']['WSD']}m/s',
-                            style: CommonTextStyle.font17TextStyle,
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -195,55 +195,103 @@ class _HomePagePageState extends State<HomePage> {
                   ),
                   Container(
                     height: 70,
-                    margin: EdgeInsets.fromLTRB(15, 10, 15, 5),
-                      child: Scrollbar(
-                        thickness: 0,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 10,
-                          itemBuilder: (context, index) {
-                            return SizedBox(
-                              width: 70,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    margin: EdgeInsets.fromLTRB(15, 10, 15, 0),
+                    child: Scrollbar(
+                      thickness: 0,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: 24,
+                        itemBuilder: (context, int index) {
+                          return SizedBox(
+                            width: 60,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                // Text('data'),
+                                Text(
+                                  '${mapData?['getVilageFcst'][index]['DateTime'].substring(8, 10)}'
+                                  '시',
+                                  style: CommonTextStyle.font17TextStyle,
+                                ),
+                                Text(
+                                  '${mapData?['getVilageFcst'][index]['SKY']}',
+                                  style: CommonTextStyle.font17TextStyle,
+                                ),
+                                Text(
+                                  '${mapData?['getVilageFcst'][index]['TMP']}°',
+                                  style: CommonTextStyle.font17TextStyle,
+                                ),
+                                // Text('${mapData?['getVilageFcst'][]['category']['TMP']}°'),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 300,
+                    margin: EdgeInsets.all(8),
+                    child: Scrollbar(
+                      thickness: 0,
+                      child: ListView.builder(
+                        itemCount: 7,
+                        itemBuilder: (context, int index) {
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Row(
                                 children: [
-                                  // Text('data'),
-                                  Text(''),
-                                  Text('☁'),
-                                  Text('20°'),
-                                  // Text('${mapData?['getVilageFcst'][]['category']['TMP']}°'),
+                                  Expanded(
+                                    child: Padding(
+                                      padding:
+                                          EdgeInsets.fromLTRB(24, 10, 0, 15),
+                                      child: Text(
+                                        '${mapData?['getVilageFcst'][index]['DateTime'].substring(6, 8)}',
+                                        style: CommonTextStyle.font17TextStyle,
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Text(
+                                        '☔0%/0%',
+                                        style: CommonTextStyle.font17TextStyle,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Text(
+                                        '☀/☀',
+                                        style: CommonTextStyle.font17TextStyle,
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Text(
+                                        '13°/26°',
+                                        style: CommonTextStyle.font17TextStyle,
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
-                            );
-                          },
-                        ),
+                            ],
+                          );
+                        },
                       ),
+                    ),
                   ),
+
                   // Row(
-                  //   children: [
-                  //     Padding(
-                  //       padding: const EdgeInsets.all(8.0),
-                  //       child: Column(
-                  //         children: [
-                  //           // Text('6.${index + 6}'),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //     Padding(
-                  //       padding: const EdgeInsets.all(8.0),
-                  //       child: Text('☔0%/0%'),
-                  //     ),
-                  //     Padding(
-                  //       padding: const EdgeInsets.all(8.0),
-                  //       child: Text('☀/☀'),
-                  //     ),
-                  //     Padding(
-                  //       padding: const EdgeInsets.all(8.0),
-                  //       child: Text('13°/26°'),
-                  //     ),
-                  //   ],
-                  // ),
-                  // child: Row(
                   //   children: [
                   //     Expanded(
                   //       child: Padding(
@@ -275,7 +323,7 @@ class _HomePagePageState extends State<HomePage> {
                   //     ),
                   //   ],
                   // ),
-
+                  //
                   // Row(
                   //   children: [
                   //     Expanded(
@@ -412,4 +460,3 @@ class _HomePagePageState extends State<HomePage> {
     );
   }
 }
-
