@@ -30,11 +30,8 @@ const getMidLandFcstURL =
 const serviceKey =
     '9OX4Slh4W3dxrLci5bFKmza/QEZJp8tfW9cna8a6T7GjZEwX1RSQPO/wXg4vemOPpQIh6S23eDDgT0SDDfTiRw==';
 
-class WeatherModel{
-  // List<String>? targetTimes;
-
+class WeatherModel {
   DateTime currentTime = DateTime.now();
-
 
   //초단기 실황 조회
   Future<Map<String, dynamic>> getUltraSrtNcstURLWeatherData() async {
@@ -130,8 +127,6 @@ class WeatherModel{
     return categoryValue;
   }
 
-
-
   //단기 예보 조회
   Future<Map<String, dynamic>> getVilageFcstURLWeatherData() async {
     Location location = Location();
@@ -147,29 +142,12 @@ class WeatherModel{
     var x = gpsToGridData['x'];
     var y = gpsToGridData['y'];
 
-    // DateTime currentTime = DateTime.now();
-    // print('Current Time: $currentTime');
-    // DateTime oneHourAgo = currentTime.subtract(Duration(hours: 1));
-    // String formattedTime = DateFormat('HH').format(oneHourAgo).toString();
-
     //현재 년도월일
     String baseDate =
         '${currentTime.year}${currentTime.month.toString().padLeft(2, '0')}${currentTime.day.toString().padLeft(2, '0')}';
 
-
-
-    //현재 시간 -1시간
-    // for (String time in targetTimes) {
-    //   String baseTime = time;
-    // }
-    // String! baseTime = getClosestTime(currentTime, targetTimes!);
-    String baseTime = '';
-
-    // log('베이스타임 현재시간 기준 가장 가까운 녀석 찍음:${baseTime.toString()}');
-    // log('${formattedTime.toString()}00');
-    // '0800';
-    // '0500';
-    // formattedTime+'00';
+    String? baseTime = TimeWidget().getClosestTime();
+    log('베이스타임 현재시간 가장 가까운 값 : $baseTime');
 
     NetworkHelper networkHelper = NetworkHelper(
         '$getVilageFcstURL?serviceKey=$serviceKey&dataType=JSON&numOfRows=1000&base_date=$baseDate&base_time=$baseTime&nx=$x&ny=$y');
@@ -220,14 +198,16 @@ class WeatherModel{
     for (int i = 0; i < tmpValueList.length; i++) {
       for (int j = 0; j < skyValueList.length; j++) {
         if (tmpValueList[i]['DateTime'] == skyValueList[j]['DateTime']) {
-
           String weatherIcon = '';
 
-          if (0 <= int.parse(skyValueList[j]['SKY']) && int.parse(skyValueList[j]['SKY']) <= 5) {
+          if (0 <= int.parse(skyValueList[j]['SKY']) &&
+              int.parse(skyValueList[j]['SKY']) <= 5) {
             weatherIcon = '☀';
-          } else if (6 <= int.parse(skyValueList[j]['SKY']) && int.parse(skyValueList[j]['SKY']) <= 8) {
+          } else if (6 <= int.parse(skyValueList[j]['SKY']) &&
+              int.parse(skyValueList[j]['SKY']) <= 8) {
             weatherIcon = '☁';
-          } else if (9 <= int.parse(skyValueList[j]['SKY']) && int.parse(skyValueList[j]['SKY']) <= 10) {
+          } else if (9 <= int.parse(skyValueList[j]['SKY']) &&
+              int.parse(skyValueList[j]['SKY']) <= 10) {
             weatherIcon = '🌫';
           }
 
@@ -235,7 +215,6 @@ class WeatherModel{
             'DateTime': tmpValueList[i]['DateTime'],
             'TMP': tmpValueList[i]['TMP'],
             'SKY': weatherIcon,
-            // 'SKY' : skyValueList[j]['SKY'],
           });
         }
       }
@@ -252,39 +231,5 @@ class WeatherModel{
     return map;
   }
 
-}
 
-//currentTime변수와 now변수 동시에 같은 걸 쓰고있어서 에러가 나옴 이거 해결해야함 ㅇㅇ
-void displayClosestTime() {
-
-  List<String> targetTimes = ['0200', '0500', '0800', '1100', '1400', '1700', '2000', '2300'];
-
-  // Format current time
-  DateFormat formatter = DateFormat('HHmm');
-  String now = formatter.format(currentTime);
-
-  print('Current Time: $now');
-
-  String? closestTime = getClosestTime(now, targetTimes);
-  print('Closest Time: $closestTime');
-}
-
-String? getClosestTime(String currentTime, List<String> targetTimes) {
-  DateFormat formatter = DateFormat('HHmm');
-  DateTime current = formatter.parse(currentTime);
-
-  Duration? minDifference;
-  String? closestTime;
-
-  for (String time in targetTimes) {
-    DateTime target = formatter.parse(time);
-    Duration difference = current.difference(target).abs();
-
-    if (minDifference == null || difference < minDifference) {
-      minDifference = difference;
-      closestTime = time;
-    }
-  }
-
-  return closestTime;
 }

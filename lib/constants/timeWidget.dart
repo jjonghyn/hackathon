@@ -1,36 +1,37 @@
 import 'package:intl/intl.dart';
+
+//현재 시간 기준으로 아래 targetTimes중 가장 가까운 시간값 가져오기
 class TimeWidget {
-  void displayClosestTime() {
-    DateTime now = DateTime.now();
-    List<String> targetTimes = ['02:00', '05:00', '08:00', '11:00', '14:00', '17:00', '20:00', '23:00'];
+  String? getClosestTime() {
+    List<String> targetTimes = [
+      '0200',
+      '0500',
+      '0800',
+      '1100',
+      '1400',
+      '1700',
+      '2000',
+      '2300'
+    ];
 
-    // Format current time
-    DateFormat formatter = DateFormat('HH:mm');
-    String currentTime = formatter.format(now);
+    //현재시간 구하기
+    DateFormat formatter = DateFormat('HHmm');
+    DateTime currentTime = DateTime.now();
+    String nowTime = formatter.format(currentTime);
 
-    print('Current Time: $currentTime');
-
-    String? closestTime = getClosestTime(currentTime, targetTimes);
-    print('Closest Time: $closestTime');
-  }
-
-  String? getClosestTime(String currentTime, List<String> targetTimes) {
-    DateFormat formatter = DateFormat('HH:mm');
-    DateTime current = formatter.parse(currentTime);
-
-    Duration? minDifference;
     String? closestTime;
+    int? minDifference;
 
+    //현재시간과 구하고자 하는 시간값 계산
     for (String time in targetTimes) {
-      DateTime target = formatter.parse(time);
-      Duration difference = current.difference(target).abs();
+      int target = int.parse(time);
+      int difference = (target - int.parse(nowTime)).abs();
 
       if (minDifference == null || difference < minDifference) {
         minDifference = difference;
         closestTime = time;
       }
     }
-
     return closestTime;
   }
 }
