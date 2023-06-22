@@ -235,7 +235,7 @@ class _HomePagePageState extends State<HomePage> {
                     child: Scrollbar(
                       thickness: 0,
                       child: ListView.builder(
-                        itemCount: 7,
+                        itemCount: 3,
                         itemBuilder: (context, int index) {
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -247,8 +247,9 @@ class _HomePagePageState extends State<HomePage> {
                                       padding:
                                           EdgeInsets.fromLTRB(24, 10, 0, 15),
                                       child: Text(
-                                        '${mapData?['getVilageFcst'][index]['DateTime'].substring(6, 8)}',
-                                        style: CommonTextStyle.font17TextStyle,
+                                        'ㅁㄴㅇ'
+                                        // '${mapData?['getDateValueList'][index]['DateTime'].substring(6, 8)}일',
+                                        // style: CommonTextStyle.font17TextStyle,
                                       ),
                                     ),
                                   ),
@@ -277,8 +278,9 @@ class _HomePagePageState extends State<HomePage> {
                                     child: Padding(
                                       padding: EdgeInsets.all(8.0),
                                       child: Text(
-                                        '13°/26°',
-                                        style: CommonTextStyle.font17TextStyle,
+                                        'ㅁㄴㅇ/ㅁ'
+                                        // '${mapData?['getDateValueList'][index]['LowestTMP']}°/${mapData?['getDateValueList'][index]['HighestTMP']}°',
+                                        // style: CommonTextStyle.font17TextStyle,
                                       ),
                                     ),
                                   ),

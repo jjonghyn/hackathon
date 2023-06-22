@@ -33,6 +33,8 @@ const serviceKey =
 class WeatherModel {
   DateTime currentTime = DateTime.now();
 
+
+
   //초단기 실황 조회
   Future<Map<String, dynamic>> getUltraSrtNcstURLWeatherData() async {
     Location location = Location();
@@ -169,6 +171,8 @@ class WeatherModel {
     * */
     List tmpValueList = List.empty(growable: true);
     List skyValueList = List.empty(growable: true);
+    List popValueList = List.empty(growable: true);
+    List ptyValueList = List.empty(growable: true);
 
     //온도 데이터를 추출하기 위한 작업
     for (int i = 0; i < itemList.length; i++) {
@@ -190,37 +194,140 @@ class WeatherModel {
       }
     }
 
+    //강수량 데이터를 추출하기 위한 작업
+    for (int i = 0; i < itemList.length; i++) {
+      if (itemList[i]['category'] == 'POP') {
+        popValueList.add({
+          'POP': itemList[i]['fcstValue'],
+        });
+      }
+    }
+
+    //강수형태 데이터를 추출하기 위한 작업
+    for (int i = 0; i < itemList.length; i++) {
+      if (itemList[i]['category'] == 'PTY') {
+        ptyValueList.add({
+          'PTY': itemList[i]['fcstValue'],
+        });
+      }
+    }
+
+
     /*
-    * 각각의 List에서 필요한 데이터를 뽑아내어
-    * newTmpSkyList라는 새로운 리스트에 합치기
+    * 각각의 List에서 필요한 데이터를 뽑아낸 뒤
+    * newTmpSkyList라는 새로운 리스트에 합치고
+    * 날씨상태에 따른 아이콘변환
     */
     List newTmpSkyList = List.empty(growable: true);
     for (int i = 0; i < tmpValueList.length; i++) {
       for (int j = 0; j < skyValueList.length; j++) {
         if (tmpValueList[i]['DateTime'] == skyValueList[j]['DateTime']) {
-          String weatherIcon = '';
+          String skyIcon = '';
+          String ptyIcon = '';
 
           if (0 <= int.parse(skyValueList[j]['SKY']) &&
               int.parse(skyValueList[j]['SKY']) <= 5) {
-            weatherIcon = '☀';
+            skyIcon = '☀';
           } else if (6 <= int.parse(skyValueList[j]['SKY']) &&
               int.parse(skyValueList[j]['SKY']) <= 8) {
-            weatherIcon = '☁';
+            skyIcon = '☁';
           } else if (9 <= int.parse(skyValueList[j]['SKY']) &&
               int.parse(skyValueList[j]['SKY']) <= 10) {
-            weatherIcon = '🌫';
+            skyIcon = '🌫';
           }
 
-          newTmpSkyList.add({
-            'DateTime': tmpValueList[i]['DateTime'],
-            'TMP': tmpValueList[i]['TMP'],
-            'SKY': weatherIcon,
-          });
+          if (int.parse(ptyValueList[j]['PTY']) == 0) {
+            ptyIcon = '☀';
+          } else if (int.parse(ptyValueList[j]['PTY']) == 1) {
+            ptyIcon = '☔';
+          } else if (int.parse(ptyValueList[j]['PTY']) == 2) {
+            ptyIcon = '☔/☃';
+          } else if (int.parse(ptyValueList[j]['PTY']) == 3) {
+            ptyIcon = '☃';
+          } else if (int.parse(ptyValueList[j]['PTY']) == 4) {
+            ptyIcon = '🌧';
+          }
+
+          if (int.parse(ptyValueList[i]['PTY']) == 0) {
+            newTmpSkyList.add({
+              'DateTime': tmpValueList[i]['DateTime'],
+              'TMP': tmpValueList[i]['TMP'],
+              'POP': popValueList[i]['POP'],
+              'SKY': skyIcon,
+            });
+          } else {
+            newTmpSkyList.add({
+              'DateTime': tmpValueList[i]['DateTime'],
+              'TMP': tmpValueList[i]['TMP'],
+              'POP': popValueList[i]['POP'],
+              'SKY': ptyIcon,
+            });
+          }
         }
       }
     }
+
     return newTmpSkyList;
   }
+
+  //api에서 내일 모레 날짜 불러오기
+  // Future<List> futureWeatherDataList() async {
+  //   //전체 데이터 불러오기
+  //   var weatherData = await getVilageFcstURLWeatherData();
+  //
+  //   //item의 List 전체 데이터 추출
+  //   List itemList = weatherData['response']['body']['items']['item'];
+  //
+  //   List tmpValueList = List.empty(growable: true);
+  //   List skyValueList = List.empty(growable: true);
+  //   List popValueList = List.empty(growable: true);
+  //
+  //   //온도 데이터를 추출하기 위한 작업
+  //   for (int i = 0; i < itemList.length; i++) {
+  //     if (itemList[i]['category'] == 'TMP') {
+  //       tmpValueList.add({
+  //         'TMP': itemList[i]['fcstValue'],
+  //         'DateTime': '${itemList[i]['fcstDate']}${itemList[i]['fcstTime']}',
+  //       });
+  //     }
+  //   }
+  //
+  //   //날씨상태 데이터를 추출하기 위한 작업
+  //   for (int i = 0; i < itemList.length; i++) {
+  //     if (itemList[i]['category'] == 'SKY') {
+  //       skyValueList.add({
+  //         'SKY': itemList[i]['fcstValue'],
+  //         'DateTime': '${itemList[i]['fcstDate']}${itemList[i]['fcstTime']}',
+  //       });
+  //     }
+  //   }
+  //
+  //   //강수량 데이터를 추출하기 위한 작업
+  //   for (int i = 0; i < itemList.length; i++) {
+  //     if (itemList[i]['category'] == 'POP') {
+  //       popValueList.add({
+  //         'POP': itemList[i]['fcstValue'],
+  //       });
+  //     }
+  //   }
+  //
+  //   List futureWeatherDataList = List.empty(growable: true);
+  //
+  //   for (int i = 0; i < tmpValueList.length; i++) {
+  //     for (int j = 0; j < skyValueList.length; j++) {
+  //       if (tmpValueList[i]['DateTime'] == skyValueList[j]['DateTime']) {
+  //         futureWeatherDataList.add({
+  //           'DateTime': tmpValueList[i]['DateTime'],
+  //           'TMP': tmpValueList[i]['TMP'],
+  //           'POP': popValueList[i]['POP'],
+  //           'SKY': skyValueList[i]['SKY'],
+  //         });
+  //       }
+  //     }
+  //   }
+  //   return futureWeatherDataList;
+  // }
+
 
   //map형태 데이터 map안에 담기
   Future getMapList() async {
@@ -228,8 +335,7 @@ class WeatherModel {
     //초단기 실황 map형태 데이터
     map['getUltraSrtNcst'] = await getUltraSrtNcstDataProcess();
     map['getVilageFcst'] = await getVilageFcstDataProcess();
+    // map['futureWeatherDataList'] = futureWeatherDataList();
     return map;
   }
-
-
 }
